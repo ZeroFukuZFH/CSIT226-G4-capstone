@@ -1,0 +1,16 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    
+}
+
+#user_form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 12px;
+}
