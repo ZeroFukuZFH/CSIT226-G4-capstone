@@ -8,6 +8,9 @@
 
 ---
 
+## Tips on development
+* when designing the UI using another text editor / IDE like VS code, I recommend first creating a .html file then transforming it into .php later when finished so you can make full use of both intellisense features (assuming that you aren't just vibe-coding ofcourse but regardless semi-helpful tip)
+
 ## 📂 Folder Structure
 >
 > [!NOTE]  
