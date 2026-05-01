@@ -9,10 +9,12 @@
     }
 
     $auth = new AuthController();
+
     if(isset($_POST['login'])) {
         $auth->navigateToLogin();
     }
-    else if (isset($_POST['signup'])) {
+    
+    if (isset($_POST['signup'])) {
         $auth->navigateToSignUp();
     }
     
