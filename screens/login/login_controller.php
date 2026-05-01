@@ -26,19 +26,24 @@
     $loginController = new LoginController($loginModel);
     $loginController->preventRevert();
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["submit"])) {
-
-    $email = $_POST["email"] ?? "";
-    $password = $_POST["password"] ?? "";
-
-    if (empty($email) || empty($password)) {
-        echo "Fields must not be empty";
-    } elseif ($loginController->authenticate($email, $password)) {
-        $_SESSION['email'] = $email;
-        echo "Login successful";
-    } else {
-        echo "Invalid email or password";
+    if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["back"])){
+        header('Location : ../auth/auth_layout.html');
+        exit();
     }
-}
+       
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["submit"])) {
+        $email = $_POST["email"] ?? "";
+        $password = $_POST["password"] ?? "";
+
+        if (empty($email) || empty($password)) {
+            echo "Fields must not be empty";
+        } elseif ($loginController->authenticate($email, $password)) {
+            $_SESSION['email'] = $email;
+            echo "Login successful";
+        } else {
+            echo "Invalid email or password";
+        }
+    }
         
 ?>
