@@ -1,10 +1,10 @@
 <?php 
     class AuthController {
         public function navigateToLogin(){
-            print "You are on the login page";
+            header('Location: ../login/login_layout.html');
         }
         public function navigateToSignUp() {
-            print "You are on the sign up page";
+            header('Location: ../signup/signup_layout.html');
         }        
     }
 
