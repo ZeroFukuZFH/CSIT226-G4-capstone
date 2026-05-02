@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 02, 2026 at 06:03 AM
+-- Generation Time: May 02, 2026 at 05:45 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -95,7 +95,7 @@ CREATE TABLE `Consumables` (
 CREATE TABLE `Guest` (
   `guestId` int(11) NOT NULL,
   `accessLevel` varchar(50) DEFAULT NULL,
-  `password` varchar(11) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `email` varchar(50) NOT NULL,
   `username` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
