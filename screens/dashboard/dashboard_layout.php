@@ -25,22 +25,26 @@ require_once 'dashboard_controller.php';
         <div class="nav-section">
             <span class="nav-label">Navigation</span>
             <nav>
-                <ul>
-                    <li class="active">Dashboard</li>
-                    <li>Rooms</li>
-                    <li>Booking Status</li>
-                </ul>
+                <form action="dashboard_controller.php" method="post">
+                    <ul>
+                        <li><button type="submit" name="btn_dashboard" class="nav-btn">Dashboard</button></li>
+                        <li><button type="submit" name="btn_rooms" class="nav-btn">Rooms</button></li>
+                        <li><button type="submit" name="btn_bookings" class="nav-btn">Booking Status</button></li>
+                    </ul>
+                </form>
             </nav>
         </div>
 
         <div class="nav-section">
             <span class="nav-label">Services</span>
             <nav>
-                <ul>
-                    <li>Consumables</li>
-                    <li>Automotives</li>
-                    <li>Amusement</li>
-                </ul>
+                <form action="dashboard_controller.php" method="post">
+                    <ul>
+                        <li><button type="submit" name="btn_consumables" class="nav-btn">Consumables</button></li>
+                        <li><button type="submit" name="btn_automotives" class="nav-btn">Automotives</button></li>
+                        <li><button type="submit" name="btn_amusement" class="nav-btn">Amusement</button></li>
+                    </ul>
+                </form>
             </nav>
         </div>
 
