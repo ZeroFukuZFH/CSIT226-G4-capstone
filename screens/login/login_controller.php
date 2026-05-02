@@ -15,7 +15,7 @@
             }
 
             if(isset($_SESSION['email'])){
-                header('Location: ../auth/auth_layout.html');
+                header('Location: ../dashboard/dashboard_layout.php');
                 exit();
             }
         }
@@ -29,7 +29,7 @@
     $loginController = new LoginController(new AuthService());
     $loginController->preventRevert();
 
-    // add back later
+    // add back option later
        
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["submit"])) {
@@ -43,10 +43,9 @@
         
         if ($loginController->authenticate($email, $password)) {
             $_SESSION['email'] = $email;
-
-        } else {
-            echo "Invalid email or password";
-        }
+            header('Location: ../dashboard/dashboard_layout.php');
+            exit();
+        } 
     }
         
 ?>

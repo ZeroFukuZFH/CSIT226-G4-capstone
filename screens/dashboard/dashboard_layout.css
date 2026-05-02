@@ -1,0 +1,232 @@
+:root {
+    --bg-dark: #0a111f;
+    --sidebar-bg: #121b2d;
+    --card-bg: #1c2a41;
+    --accent-gold: #c5a358;
+    --text-main: #ffffff;
+    --text-dim: #8a96a3;
+    --border-color: rgba(197, 163, 88, 0.2);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar Styling */
+aside {
+    width: 260px;
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    margin-bottom: 3rem;
+    line-height: 1.2;
+}
+
+.nav-section {
+    margin-bottom: 2rem;
+}
+
+.nav-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.no-margin { margin-bottom: 0; }
+
+nav ul {
+    list-style: none;
+}
+
+nav li {
+    padding: 0.8rem 0;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+}
+
+nav li:hover, nav li.active {
+    color: var(--accent-gold);
+}
+
+nav li.active {
+    border-left: 2px solid var(--accent-gold);
+    padding-left: 10px;
+    margin-left: -12px;
+}
+
+/* User Profile Section */
+.user-profile {
+    margin-top: auto;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+    background: var(--accent-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg-dark);
+    font-weight: bold;
+}
+
+.user-name { font-size: 0.8rem; font-weight: 600; }
+.user-tier { font-size: 0.6rem; color: var(--accent-gold); letter-spacing: 1px; }
+
+.sign-out-btn {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    cursor: pointer;
+}
+
+/* Main Content Styling */
+main {
+    flex-grow: 1;
+    padding: 3rem;
+    overflow-y: auto;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+}
+
+.welcome-banner {
+    background: linear-gradient(90deg, var(--card-bg) 0%, rgba(28, 42, 65, 0.4) 100%);
+    padding: 2.5rem;
+    border-radius: 4px;
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border-color);
+}
+
+.banner-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.banner-text p {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+}
+
+.tier-badge { text-align: right; }
+.tier-badge h3 { font-family: 'Playfair Display', serif; letter-spacing: 3px; }
+.sub-label { font-size: 0.6rem; letter-spacing: 1px; color: var(--text-dim); }
+
+/* Grid Cards */
+.section-title {
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 1.5rem;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: 4px;
+    transition: transform 0.3s, border 0.3s;
+    border: 1px solid transparent;
+    cursor: pointer;
+    position: relative;
+}
+
+.card:hover {
+    border: 1px solid var(--accent-gold);
+    transform: translateY(-5px);
+}
+
+.card-icon {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.card h4 {
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.card p {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+}
+
+.lock-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    opacity: 0.5;
+}
+
+.requirement-tag {
+    margin-top: 10px;
+    font-size: 0.6rem;
+    color: var(--accent-gold);
+}
+
+

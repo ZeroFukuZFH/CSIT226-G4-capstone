@@ -14,7 +14,7 @@
             }
 
             if(isset($_SESSION['email'])){
-                header('Location: ../auth/auth_layout.html');
+                header('Location: ../dashboard/dashboard_layout.php');
                 exit();
             }
         }
@@ -48,7 +48,8 @@
         $username = $fName . ' ' . $lName;
         $success = $signupController->signup($username, $email, $pass);
         if($success){
-            // reserved for dashboard
+            $_SESSION['email'] = $email;
+            header('Location: ../dashboard/dashboard_layout.php');
             exit();
         } 
         
