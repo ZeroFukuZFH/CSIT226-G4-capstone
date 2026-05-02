@@ -1,8 +1,12 @@
 <?php 
-    require_once 'login_model.php';
+    require_once '../../app/authservice.php';
+
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
     class LoginController {
-        private LoginModel $model;
-        public function __construct(LoginModel $model){
+        private ILoginService $model;
+        public function __construct(ILoginService $model){
             $this->model = $model;
         }
         public function preventRevert(){
@@ -17,19 +21,15 @@
         }
 
         public function authenticate(string $email,string $password){
-            return $this->model->authenticate($email, $password);
+            return $this->model->login($email,$password);
         }
 
     }
-
-    $loginModel = new LoginModel();
-    $loginController = new LoginController($loginModel);
+    
+    $loginController = new LoginController(new AuthService());
     $loginController->preventRevert();
 
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["back"])){
-        header('Location : ../auth/auth_layout.html');
-        exit();
-    }
+    // add back later
        
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["submit"])) {
@@ -38,9 +38,12 @@
 
         if (empty($email) || empty($password)) {
             echo "Fields must not be empty";
-        } elseif ($loginController->authenticate($email, $password)) {
+            return;
+        } 
+        
+        if ($loginController->authenticate($email, $password)) {
             $_SESSION['email'] = $email;
-            echo "Login successful";
+
         } else {
             echo "Invalid email or password";
         }
