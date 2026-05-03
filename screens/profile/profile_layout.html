@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile — Tranquiliy Base</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="profile_style.css">
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="page-wrapper">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <div class="s-crest">✦ HOTEL AND CASINO</div>
+            <div class="s-name">TRANQUILIY BASE</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Navigation</div>
+            <div class="sidebar-item" onclick="window.location.href='../dashboard/dashboard_layout.php'">⊞ Dashboard</div>
+            <div class="sidebar-item" onclick="window.location.href='../rooms/rooms_layout.php'">🛏 Rooms</div>
+            <div class="sidebar-item" onclick="window.location.href='../booking/booking_layout.php'">📋 Booking Status</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Services</div>
+            <div class="sidebar-item" onclick="window.location.href='../consumables/consumables_layout.html'">🍾 Consumables</div>
+            <div class="sidebar-item" onclick="window.location.href='../automotive/automotive_layout.php'">🚗 Automotives</div>
+            <div class="sidebar-item locked">🎰 Amusement <span class="lock-icon">🔒</span></div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Membership</div>
+            <div class="sidebar-item" onclick="window.location.href='../upgrade/upgrade_layout.php'">⬆ Upgrade Tier</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Account</div>
+            <div class="sidebar-item active-item">👤 My Profile</div>
+        </div>
+        <div class="sidebar-bottom">
+            <div class="user-row">
+                <div class="user-avatar" id="sidebarAvatar">?</div>
+                <div class="user-info">
+                    <div class="user-name" id="sidebarName">First Name Last Name</div>
+                    <div class="user-tier">✦ Silver Tier</div>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="window.location.href='../auth/auth_layout.html'">SIGN OUT</button>
+        </div>
+    </div>
+    <!-- END SIDEBAR -->
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="page-header">
+            <div class="ph-label">✦ Account</div>
+            <h1>My Profile</h1>
+        </div>
+
+        <!-- PROFILE CARD -->
+        <div class="profile-card">
+            <div class="profile-avatar-section">
+                <div class="profile-avatar" id="avatarDisplay">?</div>
+                <div class="profile-avatar-info">
+                    <div class="profile-fullname" id="displayName">First Name Last Name</div>
+                    <div class="profile-tier">✦ Silver Tier Member</div>
+                    <div class="profile-member-since">Member since May 2025</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERSONAL INFO FORM -->
+        <div class="profile-form-section">
+            <div class="section-label">✦ Personal Information</div>
+            <div class="form-row">
+                <div class="form-field">
+                    <label>First Name</label>
+                    <input type="text" id="firstName" placeholder="First name" value="" oninput="updateNameLive()">
+                </div>
+                <div class="form-field">
+                    <label>Last Name</label>
+                    <input type="text" id="lastName" placeholder="Last name" value="" oninput="updateNameLive()">
+                </div>
+            </div>
+            <div class="form-field">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="your@email.com" value="">
+            </div>
+            <div class="form-field">
+                <label>Phone Number</label>
+                <input type="text" id="phone" placeholder="+63 9XX XXX XXXX">
+            </div>
+            <div class="form-field">
+                <label>Address</label>
+                <input type="text" id="address" placeholder="Your address">
+            </div>
+        </div>
+
+        <!-- CHANGE PASSWORD FORM -->
+        <div class="profile-form-section">
+            <div class="section-label">✦ Change Password</div>
+            <div class="form-field">
+                <label>Current Password</label>
+                <input type="password" id="currentPassword" placeholder="••••••••••">
+            </div>
+            <div class="form-row">
+                <div class="form-field">
+                    <label>New Password</label>
+                    <input type="password" id="newPassword" placeholder="New password" oninput="checkPass()">
+                </div>
+                <div class="form-field">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Re-enter new password" oninput="checkPass()">
+                    <div class="err-msg" id="passErr">Passwords do not match!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="form-actions">
+            <button class="btn-primary" onclick="saveProfile()">SAVE CHANGES</button>
+            <button class="btn-outline" onclick="resetForm()">CANCEL</button>
+        </div>
+
+    </div>
+    <!-- END MAIN CONTENT -->
+
+</div>
+
+<script src="profile_controller.php"></script>
+</body>
+</html>
