@@ -18,6 +18,8 @@
             $result = $stmt->get_result();
             if ($row = $result->fetch_assoc()) {
                 if (password_verify($password, $row['password'])) {
+                    $_SESSION['id'] = $row['guestId']; 
+                    $_SESSION['username'] = $row['username'];
                     return true;
                 }
             }

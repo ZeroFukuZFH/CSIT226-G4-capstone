@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile — Tranquiliy Base</title>
+    <title>Profile — Tranquility Base</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="profile_style.css">
 </head>
@@ -17,23 +17,23 @@
     <div class="sidebar">
         <div class="sidebar-logo">
             <div class="s-crest">✦ HOTEL AND CASINO</div>
-            <div class="s-name">TRANQUILIY BASE</div>
+            <div class="s-name">TRANQUILITY BASE</div>
         </div>
         <div class="sidebar-section">
             <div class="sidebar-section-label">Navigation</div>
-            <div class="sidebar-item" onclick="window.location.href='../dashboard/dashboard_layout.php'">⊞ Dashboard</div>
-            <div class="sidebar-item" onclick="window.location.href='../rooms/rooms_layout.php'">🛏 Rooms</div>
-            <div class="sidebar-item" onclick="window.location.href='../booking/booking_layout.php'">📋 Booking Status</div>
+            <div class="sidebar-item" id="nav-dashboard">⊞ Dashboard</div>
+            <div class="sidebar-item" id="nav-rooms">🛏 Rooms</div>
+            <div class="sidebar-item" id="nav-booking">📋 Booking Status</div>
         </div>
         <div class="sidebar-section">
             <div class="sidebar-section-label">Services</div>
-            <div class="sidebar-item" onclick="window.location.href='../consumables/consumables_layout.html'">🍾 Consumables</div>
-            <div class="sidebar-item" onclick="window.location.href='../automotive/automotive_layout.php'">🚗 Automotives</div>
+            <div class="sidebar-item" id="nav-consumables">🍾 Consumables</div>
+            <div class="sidebar-item" id="nav-automotive">🚗 Automotives</div>
             <div class="sidebar-item locked">🎰 Amusement <span class="lock-icon">🔒</span></div>
         </div>
         <div class="sidebar-section">
             <div class="sidebar-section-label">Membership</div>
-            <div class="sidebar-item" onclick="window.location.href='../upgrade/upgrade_layout.php'">⬆ Upgrade Tier</div>
+            <div class="sidebar-item" id="nav-upgrade">⬆ Upgrade Tier</div>
         </div>
         <div class="sidebar-section">
             <div class="sidebar-section-label">Account</div>
@@ -47,7 +47,7 @@
                     <div class="user-tier">✦ Silver Tier</div>
                 </div>
             </div>
-            <button class="logout-btn" onclick="window.location.href='../auth/auth_layout.html'">SIGN OUT</button>
+            <button class="logout-btn" id="logoutBtn">SIGN OUT</button>
         </div>
     </div>
     <!-- END SIDEBAR -->
@@ -71,64 +71,63 @@
             </div>
         </div>
 
-        <!-- PERSONAL INFO FORM -->
-        <div class="profile-form-section">
-            <div class="section-label">✦ Personal Information</div>
-            <div class="form-row">
-                <div class="form-field">
-                    <label>First Name</label>
-                    <input type="text" id="firstName" placeholder="First name" value="" oninput="updateNameLive()">
+        <form id="profileForm" method="post" action="profile_controller.php">
+            <!-- PERSONAL INFO FORM -->
+            <div class="profile-form-section">
+                <div class="section-label">✦ Personal Information</div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>First Name</label>
+                        <!-- Added 'required' -->
+                        <input type="text" id="firstName" name="first_name" placeholder="First name" value="" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Last Name</label>
+                        <!-- Added 'required' -->
+                        <input type="text" id="lastName" name="last_name" placeholder="Last name" value="" required>
+                    </div>
                 </div>
                 <div class="form-field">
-                    <label>Last Name</label>
-                    <input type="text" id="lastName" placeholder="Last name" value="" oninput="updateNameLive()">
+                    <label>Email Address</label>
+                    <!-- Added 'required' -->
+                    <input type="email" id="email" name="email" placeholder="your@email.com" value="" required>
                 </div>
             </div>
-            <div class="form-field">
-                <label>Email Address</label>
-                <input type="email" id="email" placeholder="your@email.com" value="">
-            </div>
-            <div class="form-field">
-                <label>Phone Number</label>
-                <input type="text" id="phone" placeholder="+63 9XX XXX XXXX">
-            </div>
-            <div class="form-field">
-                <label>Address</label>
-                <input type="text" id="address" placeholder="Your address">
-            </div>
-        </div>
 
-        <!-- CHANGE PASSWORD FORM -->
-        <div class="profile-form-section">
-            <div class="section-label">✦ Change Password</div>
-            <div class="form-field">
-                <label>Current Password</label>
-                <input type="password" id="currentPassword" placeholder="••••••••••">
-            </div>
-            <div class="form-row">
+            <!-- CHANGE PASSWORD FORM -->
+            <div class="profile-form-section">
+                <div class="section-label">✦ Change Password</div>
                 <div class="form-field">
-                    <label>New Password</label>
-                    <input type="password" id="newPassword" placeholder="New password" oninput="checkPass()">
+                    <label>Current Password</label>
+                    <!-- Added 'required' for security verification -->
+                    <input type="password" id="currentPassword" name="current_password" placeholder="••••••••••" required>
                 </div>
-                <div class="form-field">
-                    <label>Confirm New Password</label>
-                    <input type="password" id="confirmPassword" placeholder="Re-enter new password" oninput="checkPass()">
-                    <div class="err-msg" id="passErr">Passwords do not match!</div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>New Password</label>
+                        <!-- Typically optional unless they actually want to change it, 
+                            but added here per your request -->
+                        <input type="password" id="newPassword" name="new_password" placeholder="New password" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirmPassword" name="confirm_password" placeholder="Re-enter new password" required>
+                        <div class="err-msg" id="passErr">Passwords do not match!</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- BUTTONS -->
-        <div class="form-actions">
-            <button class="btn-primary" onclick="saveProfile()">SAVE CHANGES</button>
-            <button class="btn-outline" onclick="resetForm()">CANCEL</button>
-        </div>
+            <!-- BUTTONS -->
+            <div class="form-actions">
+                <button name="submit" type="submit" class="btn-primary" id="saveBtn">SAVE CHANGES</button>
+                <button type="reset" class="btn-outline" id="cancelBtn">CANCEL</button>
+            </div>
+        </form>
 
     </div>
     <!-- END MAIN CONTENT -->
 
 </div>
 
-<script src="profile_controller.php"></script>
 </body>
 </html>

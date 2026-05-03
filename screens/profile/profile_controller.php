@@ -1,76 +1,38 @@
 <?php
-session_start();
+
+require_once '../../app/profileservice.php';
+class ProfileController {
+  private IProfileService $model;
+  public function __construct(IProfileService $model){
+    $this->model = $model;
+  }
+
+  public function preventDefault(){
+    if(session_status() === PHP_SESSION_NONE){
+      session_start();
+    }
+  }
+
+
+}
+
+$profile = new ProfileController(new ProfileService());
+$profile->preventDefault();
+
+if(isset($_POST['submit'])){
+  $firstName = $_POST['first_name'] ?? '';
+  $lastName  = $_POST['last_name'] ?? '';
+  $email     = $_POST['email'] ?? '';
+
+  $currentPass = $_POST['current_password'] ?? '';
+  $newPass     = $_POST['new_password'] ?? '';
+  $confirmPass = $_POST['confirm_password'] ?? '';
+
+  
+  if ($newPass !== $confirmPass) {
+    echo 'New password does not match confirm password.';
+  } else {
+    echo 'Profile updated successfully!';
+  }
+}
 ?>
-
-<script>
-  function updateNameLive() {
-    const firstName = document.getElementById('firstName').value;
-    const lastName  = document.getElementById('lastName').value;
-    const fullName  = (firstName + ' ' + lastName).trim() || 'First Name Last Name';
-    const initial   = firstName.charAt(0).toUpperCase() || '?';
-
-    document.getElementById('displayName').textContent   = fullName;
-    document.getElementById('avatarDisplay').textContent = initial;
-    document.getElementById('sidebarName').textContent   = fullName;
-    document.getElementById('sidebarAvatar').textContent = initial;
-  }
-
-  function checkPass() {
-    const np  = document.getElementById('newPassword').value;
-    const cfp = document.getElementById('confirmPassword').value;
-    const err = document.getElementById('passErr');
-
-    if (cfp.length > 0 && np !== cfp) {
-      document.getElementById('newPassword').classList.add('err');
-      document.getElementById('confirmPassword').classList.add('err');
-      err.classList.add('show');
-    } else {
-      document.getElementById('newPassword').classList.remove('err');
-      document.getElementById('confirmPassword').classList.remove('err');
-      err.classList.remove('show');
-    }
-  }
-
-  function saveProfile() {
-    const np  = document.getElementById('newPassword').value;
-    const cfp = document.getElementById('confirmPassword').value;
-
-    if (np !== '' && np !== cfp) {
-      showToast('Passwords do not match!', true);
-      return;
-    }
-
-    updateNameLive();
-    showToast('Profile updated successfully!', false);
-  }
-
-  function resetForm() {
-    document.getElementById('firstName').value       = '';
-    document.getElementById('lastName').value        = '';
-    document.getElementById('email').value           = '';
-    document.getElementById('phone').value           = '';
-    document.getElementById('address').value         = '';
-    document.getElementById('currentPassword').value = '';
-    document.getElementById('newPassword').value     = '';
-    document.getElementById('confirmPassword').value = '';
-
-    document.getElementById('newPassword').classList.remove('err');
-    document.getElementById('confirmPassword').classList.remove('err');
-    document.getElementById('passErr').classList.remove('show');
-
-    document.getElementById('displayName').textContent   = 'First Name Last Name';
-    document.getElementById('avatarDisplay').textContent = '?';
-    document.getElementById('sidebarName').textContent   = 'First Name Last Name';
-    document.getElementById('sidebarAvatar').textContent = '?';
-
-    showToast('Changes cancelled~', false);
-  }
-
-  function showToast(msg, isErr) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast' + (isErr ? ' err-toast' : '');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
-  }
-</script>
