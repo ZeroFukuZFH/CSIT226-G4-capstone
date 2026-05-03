@@ -1,3 +1,7 @@
+a, a:hover, a:focus, a:active {
+    text-decoration: none !important;
+}
+
 :root {
     --bg-dark: #0a111f;
     --sidebar-bg: #121b2d;
@@ -8,11 +12,14 @@
     --border-color: rgba(197, 163, 88, 0.2);
 }
 
+
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
+
 
 body {
     font-family: 'Montserrat', sans-serif;
@@ -23,7 +30,7 @@ body {
     overflow: hidden;
 }
 
-/* Sidebar Styling */
+/* Sidebar */
 aside {
     width: 260px;
     background-color: var(--sidebar-bg);
@@ -31,6 +38,7 @@ aside {
     display: flex;
     flex-direction: column;
     padding: 2rem 1.5rem;
+    flex-shrink: 0;
 }
 
 .logo {
@@ -56,9 +64,7 @@ aside {
 
 .no-margin { margin-bottom: 0; }
 
-nav ul {
-    list-style: none;
-}
+nav ul { list-style: none; }
 
 nav li {
     padding: 0.8rem 0;
@@ -72,9 +78,7 @@ nav li {
     align-items: center;
 }
 
-nav li:hover, nav li.active {
-    color: var(--accent-gold);
-}
+nav li:hover, nav li.active { color: var(--accent-gold); }
 
 nav li.active {
     border-left: 2px solid var(--accent-gold);
@@ -82,7 +86,23 @@ nav li.active {
     margin-left: -12px;
 }
 
-/* User Profile Section */
+.nav-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+    padding: 0;
+    width: 100%;
+    text-align: left;
+    text-decoration: none;
+    display: block;
+}
+
+/* User Profile */
 .user-profile {
     margin-top: auto;
     padding-top: 2rem;
@@ -119,6 +139,7 @@ nav li.active {
     padding: 8px;
     cursor: pointer;
 }
+
 
 /* Main Content Styling */
 main {
