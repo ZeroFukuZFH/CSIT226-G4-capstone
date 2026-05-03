@@ -11,6 +11,8 @@
         
         
         public function updateGuest(string $username, string $password, string $email) {
+            
+
             $sql = "UPDATE Guest SET username=?, password=?, email=? WHERE guestId=?";
             $stmt = $this->conn->prepare($sql);
 

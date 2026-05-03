@@ -48,6 +48,18 @@ require_once 'dashboard_controller.php';
             </nav>
         </div>
 
+        <div class="nav-section">
+            <span class="nav-label">My Account</span>
+            <nav>
+                <form action="dashboard_controller.php" method="post">
+                    <ul>
+                        <li><button type="submit" name="btn_profile" class="nav-btn">Profile</button></li>
+                        
+                    </ul>
+                </form>
+            </nav>
+        </div>
+
         <div class="user-profile">
             <div class="profile-info">
                 <div class="avatar">M</div>

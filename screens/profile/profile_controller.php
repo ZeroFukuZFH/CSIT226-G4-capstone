@@ -13,7 +13,12 @@ class ProfileController {
     }
   }
 
-
+  public function updateGuest(string $username,string $password, string $email){
+    if (!isset($_SESSION['id'])) {
+      return "User not logged in.";
+    }
+    $this->model->updateGuest($username,$password,$email);
+  }
 }
 
 $profile = new ProfileController(new ProfileService());
@@ -28,11 +33,11 @@ if(isset($_POST['submit'])){
   $newPass     = $_POST['new_password'] ?? '';
   $confirmPass = $_POST['confirm_password'] ?? '';
 
-  
+  $fullName = $firstName . ' ' . $lastName;
   if ($newPass !== $confirmPass) {
     echo 'New password does not match confirm password.';
   } else {
-    echo 'Profile updated successfully!';
+    $profile->updateGuest($fullName,$email,$newPass);
   }
 }
 ?>

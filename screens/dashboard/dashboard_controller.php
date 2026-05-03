@@ -27,6 +27,12 @@
     $dashboard = new DashboardController(new DashboardService());
     $dashboard->protectRoute();
 
+
+    if (isset($_POST['btn_profile'])) {
+        header('Location: ../profile/profile_layout.html');
+        exit();
+    }
+
     if (isset($_POST['btn_bookings'])) {
         // route here!!!
         exit();
