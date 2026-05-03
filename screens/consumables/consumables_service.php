@@ -45,7 +45,7 @@ class ConsumablesService extends Database {
     }
 
     public function placeOrder(int $consumableID): array {
-        $sql  = 'SELECT Name, price FROM Consumables WHERE ConsumableID = ?';
+        $sql  = 'SELECT name, price FROM consumables WHERE consumableID = ?';
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('i', $consumableID);
         $stmt->execute();
@@ -55,13 +55,13 @@ class ConsumablesService extends Database {
             return ['success' => false, 'message' => 'Item not found.'];
         }
 
-        $sql2  = 'INSERT INTO ConsumableOrder (guestID, consumableID, totalPrice, status) VALUES (?, ?, ?, "Pending")';
+        $sql2  = 'INSERT INTO consumableorder (guestID, consumableID, totalPrice, status) VALUES (?, ?, ?, "Pending")';
         $stmt2 = $this->conn->prepare($sql2);
         $stmt2->bind_param('iid', $this->guestID, $consumableID, $item['price']);
         $ok = $stmt2->execute();
 
         if ($ok) {
-            return ['success' => true, 'message' => 'Order placed for ' . $item['Name'] . '!'];
+            return ['success' => true, 'message' => 'Order placed for ' . $item['name'] . '!'];
         } else {
             return ['success' => false, 'message' => 'Failed to place order. Please try again.'];
         }
@@ -69,9 +69,9 @@ class ConsumablesService extends Database {
 
     public function getMyOrders(): array {
         $sql = 'SELECT co.orderID, co.totalPrice, co.status, co.createdAt,
-                       c.Name AS itemName
-                FROM ConsumableOrder co
-                JOIN Consumables c ON co.consumableID = c.ConsumableID
+                       c.name AS itemName
+                       FROM consumableorder co
+                       JOIN consumables c ON co.consumableID = c.consumableID
                 WHERE co.guestID = ?
                 ORDER BY co.createdAt DESC';
         $stmt = $this->conn->prepare($sql);
@@ -81,7 +81,7 @@ class ConsumablesService extends Database {
     }
 
     public function cancelOrder(int $orderID): bool {
-        $sql  = 'UPDATE ConsumableOrder SET status = "Cancelled"
+        $sql  = 'UPDATE consumableorder SET status = "Cancelled"
                  WHERE orderID = ? AND guestID = ? AND status = "Pending"';
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('ii', $orderID, $this->guestID);
