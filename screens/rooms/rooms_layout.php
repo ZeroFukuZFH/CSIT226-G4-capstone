@@ -49,13 +49,15 @@
 
         <div class="user-profile">
             <div class="profile-info">
-                <div class="avatar"><?= strtoupper(substr($roomsController->getUserName(), 0, 1)) ?></div>
+                <div class="avatar"><?= htmlspecialchars(strtoupper(substr($roomsController->getUserName(), 0, 1))) ?></div>
                 <div class="user-meta">
-                    <div class="user-name"><?= $roomsController->getUserName() ?></div>
-                    <div class="user-tier"><?= $roomsController->getUserTier() ?> TIER</div>
+                    <div class="user-name"><?= htmlspecialchars($roomsController->getUserName()) ?></div>
+                    <div class="user-tier"><?= htmlspecialchars($roomsController->getUserTier()) ?> TIER</div>
                 </div>
             </div>
-            <div class="sign-out-btn">SIGN OUT</div>
+            <form method="POST" action="../signout.php">
+                <button type="submit" class="sign-out-btn">SIGN OUT</button>
+            </form>
         </div>
     </aside>
 
@@ -73,37 +75,55 @@
 
         <?php
         $tierLevel = $roomsController->getUserTierLevel();
+        $catalog   = $roomsController->getCatalog();
 
         $rooms = [
-            ['name' => 'Deluxe Suite', 'meta' => '42 SQM · OCEAN VIEW · FLOOR 12', 'price' => '₱8,500', 'icon' => '🛏️', 'required' => 1],
-            ['name' => 'Premier Room', 'meta' => '26 SQM · GARDEN VIEW · FLOOR 6', 'price' => '₱5,200', 'icon' => '🏨', 'required' => 1],
-            ['name' => 'Royal Penthouse', 'meta' => '120 SQM · PANORAMIC · FLOOR 30', 'price' => '₱45,000', 'icon' => '👑', 'required' => 4],
-            ['name' => 'Executive Room', 'meta' => '35 SQM · CITY VIEW · FLOOR 15', 'price' => '₱6,800', 'icon' => '🌙', 'required' => 1],
+            ['name' => 'Deluxe Suite',    'meta' => '42 SQM · OCEAN VIEW',  'icon' => '🛏️'],
+            ['name' => 'Premier Room',    'meta' => '26 SQM · GARDEN VIEW', 'icon' => '🏨'],
+            ['name' => 'Royal Penthouse', 'meta' => '120 SQM · PANORAMIC',  'icon' => '👑'],
+            ['name' => 'Executive Room',  'meta' => '35 SQM · CITY VIEW',   'icon' => '🌙'],
         ];
         ?>
 
         <div class="room-grid">
-            <?php foreach ($rooms as $room): ?>
-                <?php $locked = $tierLevel < $room['required']; ?>
+            <?php foreach ($rooms as $room):
+                $data      = $catalog[$room['name']];
+                $locked    = $tierLevel < $data['required'];
+                $available = !$locked && $roomsController->isRoomAvailable($room['name']);
+                $price     = '₱' . number_format($data['price']);
+                $floor     = $data['floor'];
+                $tierName  = $data['tier_name'];
+            ?>
                 <div class="room-card">
                     <div class="room-image">
                         <span class="room-icon"><?= $room['icon'] ?></span>
-                        <div class="room-badge <?= $locked ? 'badge-locked' : 'badge-available' ?>">
-                            <?= $locked ? 'DIAMOND ONLY' : 'AVAILABLE' ?>
+                        <div class="room-badge <?= $locked ? 'badge-locked' : ($available ? 'badge-available' : 'badge-booked') ?>">
+                            <?php if ($locked): ?>
+                                <?= htmlspecialchars($tierName) ?> ONLY
+                            <?php elseif ($available): ?>
+                                AVAILABLE
+                            <?php else: ?>
+                                BOOKED
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="room-body">
-                        <div class="room-name"><?= $room['name'] ?></div>
-                        <div class="room-meta"><?= $room['meta'] ?></div>
-                        <div class="room-price"><?= $room['price'] ?> <span>/ night</span></div>
+                        <div class="room-name"><?= htmlspecialchars($room['name']) ?></div>
+                        <div class="room-meta"><?= htmlspecialchars($room['meta']) ?> · FLOOR <?= $floor ?></div>
+                        <div class="room-price"><?= $price ?> <span>/ night</span></div>
 
                         <?php if ($locked): ?>
                             <div class="room-actions">
-                                <div class="requirement-tag">💎 DIAMOND REQUIRED</div>
+                                <div class="requirement-tag">Requires <?= htmlspecialchars($tierName) ?> Tier</div>
                                 <button class="btn-locked" disabled>LOCKED</button>
                             </div>
+                        <?php elseif (!$available): ?>
+                            <button class="btn-locked" disabled>UNAVAILABLE</button>
                         <?php else: ?>
-                            <button class="btn-reserve" onclick="openModal('<?= $room['name'] ?>', '<?= $room['price'] ?>')">RESERVE NOW</button>
+                            <button class="btn-reserve"
+                                onclick="openModal('<?= htmlspecialchars($room['name'], ENT_QUOTES) ?>', '<?= $price ?>', <?= $floor ?>)">
+                                RESERVE NOW
+                            </button>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -120,7 +140,6 @@
 
             <form method="POST" action="rooms_layout.php">
                 <input type="hidden" id="room_name" name="room_name" value="">
-                <input type="hidden" id="room_price" name="room_price" value="">
 
                 <div class="form-field">
                     <label>Room Type</label>
@@ -128,8 +147,8 @@
                 </div>
 
                 <div class="form-field">
-                    <label for="floor">Preferred Floor (1–30)</label>
-                    <input type="number" id="floor" name="floor" min="1" max="30" placeholder="e.g. 12" required>
+                    <label>Floor</label>
+                    <input type="text" id="modalFloorLabel" readonly>
                 </div>
 
                 <button type="submit" name="book" class="btn-confirm">CONFIRM RESERVATION →</button>
@@ -139,10 +158,10 @@
     </div>
 
     <script>
-        function openModal(roomName, roomPrice) {
+        function openModal(roomName, roomPrice, floor) {
             document.getElementById('room_name').value = roomName;
-            document.getElementById('room_price').value = roomPrice;
             document.getElementById('modalRoomLabel').value = roomName;
+            document.getElementById('modalFloorLabel').value = 'Floor ' + floor;
             document.getElementById('modalTitle').textContent = 'Reserve ' + roomName;
             document.getElementById('bookModal').classList.add('active');
         }

@@ -228,6 +228,12 @@ h1 {
     background: rgba(0,0,0,0.4);
 }
 
+.badge-booked {
+    border-left: 2px solid #c0392b;
+    color: #e74c3c;
+    background: rgba(0,0,0,0.4);
+}
+
 /* Room body */
 .room-body {
     padding: 1.5rem;
