@@ -28,7 +28,9 @@
         public function signup(string $username, string $email, string $password){
             $defaultAccessLevel = "SILVER";
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
+            $userId = $this->conn->insert_id;
+            $_SESSION['id'] = $userId;
+            $_SESSION['username'] = $username;
             $sql = "INSERT INTO Guest (accessLevel,password,email,username) VALUES (?,?,?,?);";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("ssss",$defaultAccessLevel,$hashedPassword,$email,$username);

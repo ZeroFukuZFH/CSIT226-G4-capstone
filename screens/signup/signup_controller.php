@@ -1,39 +1,59 @@
-<?php
-require_once '../../app/authservice.php';
+<?php 
+    require_once '../../app/authservice.php';
+    
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+    
+    class SignupController {
+        private ISignupService $model;
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+        public function preventRevert(){
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
 
-if (isset($_SESSION['email'])) {
-    header('Location: ../dashboard/dashboard_layout.php');
-    exit();
-}
+            if(isset($_SESSION['email'])){
+                header('Location: ../dashboard/dashboard_layout.php');
+                exit();
+            }
+        }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
-    $firstname        = trim($_POST['firstname'] ?? '');
-    $lastname         = trim($_POST['lastname'] ?? '');
-    $email            = trim($_POST['email'] ?? '');
-    $password         = $_POST['password'] ?? '';
-    $confirm_password = $_POST['confirm_password'] ?? '';
-    $username         = $firstname . ' ' . $lastname;
+        public function __construct(ISignupService $model)
+        {
+            $this->model = $model;
+        }
 
-    if (empty($firstname) || empty($lastname) || empty($email) || empty($password)) {
-        echo "All fields are required.";
-        exit();
+        public function signup(string $username, string $email, string $password){
+            return $this->model->signup($username,$email,$password);
+        }
     }
 
-    if ($password !== $confirm_password) {
-        echo "Passwords do not match.";
-        exit();
+    $signupController = new SignupController(new AuthService());
+    $signupController->preventRevert();
+
+    // add back 
+    
+    if (isset($_POST['submit'])) {
+        $fName = $_POST['fname'];
+        $lName = $_POST['lname'];
+        $email = $_POST['email'];
+        $pass  = $_POST['password'];
+        $conf  = $_POST['confirmpassword'];
+
+        if ($pass !== $conf) {
+            die("Passwords do not match!");
+        }
+
+        $username = $fName . ' ' . $lName;
+        $success = $signupController->signup($username, $email, $pass);
+        if($success){
+            $_SESSION['email'] = $email;
+            header('Location: ../dashboard/dashboard_layout.php');
+            exit();
+        } 
+        
     }
 
-    $auth = new AuthService();
-    if ($auth->signup($username, $email, $password)) {
-        header('Location: ../login/login_layout.html');
-        exit();
-    } else {
-        echo "Signup failed. Email may already be in use.";
-    }
-}
+
 ?>
