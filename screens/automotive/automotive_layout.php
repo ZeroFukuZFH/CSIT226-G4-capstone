@@ -5,62 +5,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tranquility Base | Automotive Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="automotive_style.css">
 </head>
 <body>
 
-<div class="app-layout">
-
-    <aside class="sidebar">
-        <div class="sidebar-top">
-            <div class="hotel-label">✦ HOTEL AND CASINO</div>
-            <div class="hotel-name">TRANQUILITY<br>BASE</div>
+    <aside>
+        <div class="logo">
+            HOTEL AND CASINO<br>
+            <strong>TRANQUILITY<br>BASE</strong>
         </div>
 
-        <nav class="sidebar-nav">
-            <div class="nav-section-label">NAVIGATION</div>
-            <a href="../dashboard/dashboard_layout.html" class="nav-item">
-                <span class="nav-icon">⊞</span> DASHBOARD
-            </a>
-            <a href="../rooms/rooms_layout.html" class="nav-item">
-                <span class="nav-icon">—</span> ROOMS
-            </a>
-            <a href="../bookings/bookings_layout.html" class="nav-item">
-                <span class="nav-icon">≡</span> BOOKING STATUS
-            </a>
+        <div class="nav-section">
+            <span class="nav-label">Navigation</span>
+            <nav>
+                <ul>
+                    <li><a href="../dashboard/dashboard_layout.php" class="nav-btn">Dashboard</a></li>
+                    <li><a href="../rooms/rooms_layout.php" class="nav-btn">Rooms</a></li>
+                    <li><a href="../bookings/bookings_layout.php" class="nav-btn">Booking Status</a></li>
+                </ul>
+            </nav>
+        </div>
 
-            <div class="nav-section-label">SERVICES</div>
-            <a href="../consumables/consumables_layout.html" class="nav-item">
-                <span class="nav-icon">🍴</span> CONSUMABLES
-            </a>
-            <a href="automotive_layout.php" class="nav-item active">
-                <span class="nav-icon">🚗</span> AUTOMOTIVES
-            </a>
-            <a href="../amusement/amusement_layout.html" class="nav-item">
-                <span class="nav-icon">🎡</span> AMUSEMENT
-            </a>
+        <div class="nav-section">
+            <span class="nav-label">Services</span>
+            <nav>
+                <ul>
+                    <li><a href="../consumables/consumables_layout.php" class="nav-btn">Consumables</a></li>
+                    <li class="active">Automotives</li>
+                    <li><a href="../amusement/amusement_layout.php" class="nav-btn">Amusement</a></li>
+                </ul>
+            </nav>
+        </div>
 
-            <div class="nav-section-label">MEMBERSHIP</div>
-            <a href="../upgrade/upgrade_layout.html" class="nav-item">
-                <span class="nav-icon">◇</span> UPGRADE TIER
-            </a>
-        </nav>
+        <div class="nav-section">
+            <span class="nav-label">Membership</span>
+            <nav>
+                <ul>
+                    <li><a href="../upgrade/upgrade_layout.php" class="nav-btn">Upgrade Tier</a></li>
+                </ul>
+            </nav>
+        </div>
 
-        <div class="sidebar-user">
-            <div class="user-avatar"><?= strtoupper(substr($_SESSION['name'] ?? $_SESSION['email'] ?? 'G', 0, 1)) ?></div>
-            <div class="user-info">
-                <div class="user-name"><?= $_SESSION['name'] ?? $_SESSION['email'] ?? 'Guest' ?></div>
-                <div class="user-tier">✦ <?= $_SESSION['tier'] ?? 'SILVER' ?> TIER</div>
+        <div class="user-profile">
+            <div class="profile-info">
+                <div class="avatar"><?= htmlspecialchars(strtoupper(substr($automotiveController->getUserName(), 0, 1))) ?></div>
+                <div class="user-meta">
+                    <div class="user-name"><?= htmlspecialchars($automotiveController->getUserName()) ?></div>
+                    <div class="user-tier"><?= htmlspecialchars($automotiveController->getUserTier()) ?> TIER</div>
+                </div>
             </div>
-            <form method="POST" action="../login/login_controller.php">
-                <button type="submit" name="signout" class="btn-signout">SIGN OUT</button>
+            <form method="POST" action="../signout.php">
+                <button type="submit" class="sign-out-btn">SIGN OUT</button>
             </form>
         </div>
     </aside>
 
-    <main class="main-content">
+    <main>
         <div class="page-header">
-            <p class="label">✦ CONCIERGE</p>
+            <span class="label no-margin">✦ CONCIERGE</span>
             <h1>Automotive Services</h1>
         </div>
 
@@ -138,23 +141,6 @@
 
         </div>
     </main>
-
-</div>
-
-<nav class="bottom-nav">
-    <div class="nav-links">
-        <a href="../auth/auth_layout.html">AUTH</a>
-        <a href="../login/login_layout.html">LOGIN</a>
-        <a href="../signup/signup_layout.html">SIGN UP</a>
-        <a href="../dashboard/dashboard_layout.html">DASHBOARD</a>
-        <a href="../rooms/rooms_layout.html">ROOMS</a>
-        <a href="automotive_layout.php" class="active">AUTOMOTIVE</a>
-        <a href="../consumables/consumables_layout.html">CONSUMABLES</a>
-        <a href="../amusement/amusement_layout.html">AMUSEMENT</a>
-        <a href="../upgrade/upgrade_layout.html">UPGRADE TIER</a>
-        <a href="../bookings/bookings_layout.html">BOOKINGS</a>
-    </div>
-</nav>
 
 </body>
 </html>
