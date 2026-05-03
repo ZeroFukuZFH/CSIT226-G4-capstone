@@ -16,61 +16,10 @@ require_once 'dashboard_controller.php';
 </head>
 <body>
 
-    <aside>
-        <div class="logo">
-            HOTEL AND CASINO<br>
-            <strong>TRANQUILITY<br>BASE</strong>
-        </div>
 
-        <div class="nav-section">
-            <span class="nav-label">Navigation</span>
-            <nav>
-                <form action="dashboard_controller.php" method="post">
-                    <ul>
-                        <li><button type="submit" name="btn_dashboard" class="nav-btn">Dashboard</button></li>
-                        <li><button type="submit" name="btn_rooms" class="nav-btn">Rooms</button></li>
-                        <li><button type="submit" name="btn_bookings" class="nav-btn">Booking Status</button></li>
-                    </ul>
-                </form>
-            </nav>
-        </div>
-
-        <div class="nav-section">
-            <span class="nav-label">Services</span>
-            <nav>
-                <form action="dashboard_controller.php" method="post">
-                    <ul>
-                        <li><button type="submit" name="btn_consumables" class="nav-btn">Consumables</button></li>
-                        <li><button type="submit" name="btn_automotives" class="nav-btn">Automotives</button></li>
-                        <li><button type="submit" name="btn_amusement" class="nav-btn">Amusement</button></li>
-                    </ul>
-                </form>
-            </nav>
-        </div>
-
-        <div class="nav-section">
-            <span class="nav-label">My Account</span>
-            <nav>
-                <form action="dashboard_controller.php" method="post">
-                    <ul>
-                        <li><button type="submit" name="btn_profile" class="nav-btn">Profile</button></li>
-                        
-                    </ul>
-                </form>
-            </nav>
-        </div>
-
-        <div class="user-profile">
-            <div class="profile-info">
-                <div class="avatar">M</div>
-                <div class="user-meta">
-                    <div class="user-name"><?php echo $dashboard->getName();?></div>
-                    <div class="user-tier"><?php echo $dashboard->getTier(); ?> TIER</div>
-                </div>
-            </div>
-            <div class="sign-out-btn">SIGN OUT</div>
-        </div>
-    </aside>
+    <!-- Sidebar -->
+    
+    <!-- End of Sidebar -->
 
     <main>
         <header class="header-top">
