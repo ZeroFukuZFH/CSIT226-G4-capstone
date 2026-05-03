@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumables — Tranquiliy Base</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="consumables_style.css">
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="page-wrapper">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <div class="s-crest">✦ HOTEL AND CASINO</div>
+            <div class="s-name">TRANQUILIY BASE</div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Navigation</div>
+            <div class="sidebar-item" onclick="window.location.href='../dashboard/dashboard_layout.php'">⊞ Dashboard</div>
+            <div class="sidebar-item" onclick="window.location.href='../rooms/rooms_layout.php'">🛏 Rooms</div>
+            <div class="sidebar-item" onclick="window.location.href='../booking/booking_layout.php'">📋 Booking Status</div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Services</div>
+            <div class="sidebar-item active-item">🍾 Consumables</div>
+            <div class="sidebar-item" onclick="window.location.href='../automotive/automotive_layout.php'">🚗 Automotives</div>
+            <div class="sidebar-item locked">🎰 Amusement <span class="lock-icon">🔒</span></div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Membership</div>
+            <div class="sidebar-item" onclick="window.location.href='../upgrade/upgrade_layout.php'">⬆ Upgrade Tier</div>
+        </div>
+
+        <div class="sidebar-bottom">
+            <div class="user-row">
+                <div class="user-avatar">M</div>
+                <div class="user-info">
+                    <div class="user-name">Mayii J.</div>
+                    <div class="user-tier">✦ Silver Tier</div>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="window.location.href='../auth/auth_layout.html'">SIGN OUT</button>
+        </div>
+    </div>
+    <!-- END SIDEBAR -->
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="page-header">
+            <div class="ph-label">✦ In-Room &amp; Dining</div>
+            <h1>Consumables</h1>
+        </div>
+
+        <div class="product-grid">
+
+            <!-- Card 1: Champagne Service -->
+            <div class="product-card">
+                <div class="product-icon">🍾</div>
+                <div class="product-name">Champagne Service</div>
+                <div class="product-desc">Moët &amp; Chandon, served chilled with crystal flutes</div>
+                <div class="product-price">₱4,500 / bottle</div>
+                <button class="btn-sm" onclick="showToast('Added to Your Order')">ORDER NOW</button>
+            </div>
+
+            <!-- Card 2: Fine Dining Delivery -->
+            <div class="product-card">
+                <div class="product-icon">🥩</div>
+                <div class="product-name">Fine Dining Delivery</div>
+                <div class="product-desc">5-course tasting menu delivered to your suite</div>
+                <div class="product-price">₱3,800 / person</div>
+                <button class="btn-sm" onclick="showToast('Dinner Order Placed')">ORDER NOW</button>
+            </div>
+
+            <!-- Card 3: Rare Spirits LOCKED -->
+            <div class="product-card locked-card" onclick="showToast('🔒 Rare Spirits — Gold Tier Required')">
+                <div class="product-lock">🔒</div>
+                <div class="product-icon">🥃</div>
+                <div class="product-name">Rare Spirits</div>
+                <div class="product-desc">Single malt Scotch, rare cognac &amp; premium whiskey collection</div>
+                <div class="product-price gold-badge-text">₱8,000+</div>
+                <div class="sc-tier-req tier-gold">Gold+ Required</div>
+            </div>
+
+            <!-- Card 4: Morning Rituals -->
+            <div class="product-card">
+                <div class="product-icon">☕</div>
+                <div class="product-name">Morning Rituals</div>
+                <div class="product-desc">Single origin coffee, premium tea, fresh pastries</div>
+                <div class="product-price">₱850 / set</div>
+                <button class="btn-sm" onclick="showToast('Breakfast Order Placed')">ORDER NOW</button>
+            </div>
+
+            <!-- Card 5: Private Chef LOCKED -->
+            <div class="product-card locked-card" onclick="showToast('🔒 Private Chef — Platinum Tier Required')">
+                <div class="product-lock">🔒</div>
+                <div class="product-icon">👨‍🍳</div>
+                <div class="product-name">Private Chef</div>
+                <div class="product-desc">Personal chef for your suite, custom menu crafted for you</div>
+                <div class="product-price platinum-badge-text">₱25,000 / evening</div>
+                <div class="sc-tier-req tier-platinum">Platinum+ Required</div>
+            </div>
+
+            <!-- Card 6: Welcome Amenity -->
+            <div class="product-card">
+                <div class="product-icon">🧁</div>
+                <div class="product-name">Welcome Amenity</div>
+                <div class="product-desc">Complimentary fruit basket and artisan chocolates</div>
+                <div class="product-price complimentary-text">Complimentary</div>
+                <button class="btn-sm" onclick="showToast('Amenity Requested')">REQUEST</button>
+            </div>
+
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+
+</div>
+
+<script src="consumables_controller.php"></script>
+</body>
+</html>
