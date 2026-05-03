@@ -1,43 +1,61 @@
 <?php
 
 require_once '../../app/profileservice.php';
+
 class ProfileController {
-  private IProfileService $model;
-  public function __construct(IProfileService $model){
-    $this->model = $model;
-  }
-
-  public function preventDefault(){
-    if(session_status() === PHP_SESSION_NONE){
-      session_start();
+    private IProfileService $model;
+    
+    public function __construct(IProfileService $model){
+        $this->model = $model;
     }
-  }
 
-  public function updateGuest(string $username,string $password, string $email){
-    if (!isset($_SESSION['id'])) {
-      return "User not logged in.";
+    public function editProfile(string $username, string $email, string $password){
+        return $this->model->updateGuest($username, $password, $email);
     }
-    $this->model->updateGuest($username,$password,$email);
-  }
+
+    public function logout() {
+            $_SESSION = [];
+            header("Location: ../auth/auth_layout.html");
+            session_destroy();
+            exit();
+    }
 }
+
+session_start();
 
 $profile = new ProfileController(new ProfileService());
-$profile->preventDefault();
 
-if(isset($_POST['submit'])){
-  $firstName = $_POST['first_name'] ?? '';
-  $lastName  = $_POST['last_name'] ?? '';
-  $email     = $_POST['email'] ?? '';
-
-  $currentPass = $_POST['current_password'] ?? '';
-  $newPass     = $_POST['new_password'] ?? '';
-  $confirmPass = $_POST['confirm_password'] ?? '';
-
-  $fullName = $firstName . ' ' . $lastName;
-  if ($newPass !== $confirmPass) {
-    echo 'New password does not match confirm password.';
-  } else {
-    $profile->updateGuest($fullName,$email,$newPass);
-  }
+if(!isset($_SESSION['email'])){
+    header('Location: ../login/login_layout.html');
+    session_destroy();
+    exit();
 }
+
+if(isset($_POST['update_profile'])){
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+    
+    // Check if passwords match
+    if (!empty($password) && $password !== $confirm_password) {
+        $_SESSION['error_message'] = "Passwords do not match!";
+        header('Location: ../profile/profile_layout.php');
+        exit();
+    }
+    
+    // Update profile
+    if($profile->editProfile($username, $email, $password)) {
+        $_SESSION['username'] = $username;
+        $_SESSION['email'] = $email;
+    } 
+    
+    header('Location: ../profile/profile_layout.php');
+    exit();
+}
+
+if(isset($_POST['logout'])){
+        $profile->logout();
+    }
+
 ?>

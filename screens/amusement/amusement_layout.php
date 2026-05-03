@@ -1,5 +1,5 @@
 <?php
-    require_once '../dashboard/dashboard_controller.php'
+    require_once '../dashboard/dashboard_controller.php';
 ?>
 
 <!DOCTYPE html>
@@ -52,7 +52,7 @@
             <span class="nav-label">My Account</span>
             <nav>
                 <ul>
-                    <li><a href="../profile/profile_layout.html" class="nav-btn">Edit Profile</a></li>
+                    <li><a href="../profile/profile_layout.php" class="nav-btn">Edit Profile</a></li>
                 </ul>
             </nav>
         </div>
