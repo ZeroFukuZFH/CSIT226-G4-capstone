@@ -22,7 +22,7 @@
                 <ul>
                     <li><a href="../dashboard/dashboard_layout.php" class="nav-btn">Dashboard</a></li>
                     <li class="active">Rooms</li>
-                    <li><a href="../bookings/bookings_layout.php" class="nav-btn">Booking Status</a></li>
+                    <li><a href="../bookings/bookings_layout.html" class="nav-btn">Booking Status</a></li>
                 </ul>
             </nav>
         </div>
@@ -31,9 +31,9 @@
             <span class="nav-label">Services</span>
             <nav>
                 <ul>
-                    <li><a href="../consumables/consumables_layout.php" class="nav-btn">Consumables</a></li>
+                    <li><a href="../consumables/consumables_layout.html" class="nav-btn">Consumables</a></li>
                     <li><a href="../automotive/automotive_layout.php" class="nav-btn">Automotives</a></li>
-                    <li><a href="../amusement/amusement_layout.php" class="nav-btn">Amusement</a></li>
+                    <li><a href="../amusement/amusement_layout.html" class="nav-btn">Amusement</a></li>
                 </ul>
             </nav>
         </div>

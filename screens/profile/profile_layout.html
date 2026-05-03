@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile — Tranquility Base</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="profile_style.css">
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="page-wrapper">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <div class="s-crest">✦ HOTEL AND CASINO</div>
+            <div class="s-name">TRANQUILITY BASE</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Navigation</div>
+            <div class="sidebar-item" id="nav-dashboard">⊞ Dashboard</div>
+            <div class="sidebar-item" id="nav-rooms">🛏 Rooms</div>
+            <div class="sidebar-item" id="nav-booking">📋 Booking Status</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Services</div>
+            <div class="sidebar-item" id="nav-consumables">🍾 Consumables</div>
+            <div class="sidebar-item" id="nav-automotive">🚗 Automotives</div>
+            <div class="sidebar-item locked">🎰 Amusement <span class="lock-icon">🔒</span></div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Membership</div>
+            <div class="sidebar-item" id="nav-upgrade">⬆ Upgrade Tier</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Account</div>
+            <div class="sidebar-item active-item">👤 My Profile</div>
+        </div>
+        <div class="sidebar-bottom">
+            <div class="user-row">
+                <div class="user-avatar" id="sidebarAvatar">?</div>
+                <div class="user-info">
+                    <div class="user-name" id="sidebarName">First Name Last Name</div>
+                    <div class="user-tier">✦ Silver Tier</div>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">SIGN OUT</button>
+        </div>
+    </div>
+    <!-- END SIDEBAR -->
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="page-header">
+            <div class="ph-label">✦ Account</div>
+            <h1>My Profile</h1>
+        </div>
+
+        <!-- PROFILE CARD -->
+        <div class="profile-card">
+            <div class="profile-avatar-section">
+                <div class="profile-avatar" id="avatarDisplay">?</div>
+                <div class="profile-avatar-info">
+                    <div class="profile-fullname" id="displayName">First Name Last Name</div>
+                    <div class="profile-tier">✦ Silver Tier Member</div>
+                    <div class="profile-member-since">Member since May 2025</div>
+                </div>
+            </div>
+        </div>
+
+        <form id="profileForm" method="post" action="profile_controller.php">
+            <!-- PERSONAL INFO FORM -->
+            <div class="profile-form-section">
+                <div class="section-label">✦ Personal Information</div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>First Name</label>
+                        <!-- Added 'required' -->
+                        <input type="text" id="firstName" name="first_name" placeholder="First name" value="" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Last Name</label>
+                        <!-- Added 'required' -->
+                        <input type="text" id="lastName" name="last_name" placeholder="Last name" value="" required>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>Email Address</label>
+                    <!-- Added 'required' -->
+                    <input type="email" id="email" name="email" placeholder="your@email.com" value="" required>
+                </div>
+            </div>
+
+            <!-- CHANGE PASSWORD FORM -->
+            <div class="profile-form-section">
+                <div class="section-label">✦ Change Password</div>
+                <div class="form-field">
+                    <label>Current Password</label>
+                    <!-- Added 'required' for security verification -->
+                    <input type="password" id="currentPassword" name="current_password" placeholder="••••••••••" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>New Password</label>
+                        <!-- Typically optional unless they actually want to change it, 
+                            but added here per your request -->
+                        <input type="password" id="newPassword" name="new_password" placeholder="New password" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirmPassword" name="confirm_password" placeholder="Re-enter new password" required>
+                        <div class="err-msg" id="passErr">Passwords do not match!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="form-actions">
+                <button name="submit" type="submit" class="btn-primary" id="saveBtn">SAVE CHANGES</button>
+                <button type="reset" class="btn-outline" id="cancelBtn">CANCEL</button>
+            </div>
+        </form>
+
+    </div>
+    <!-- END MAIN CONTENT -->
+
+</div>
+
+</body>
+</html>
