@@ -1,55 +1,152 @@
 <?php
+require_once '../../app/database.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+class ConsumablesController {
+    private $db;
+    public string $lastError = '';
+
+    public function __construct() {
+        $database = new Database();
+        $this->db = $database->conn;
+    }
+
+    public function logout() {
+        $_SESSION = [];
+        header("Location: ../auth/auth_layout.html");
+        session_destroy();
+        exit();
+    }
+
+    public function getUserName(): string {
+        return $_SESSION['name'] ?? $_SESSION['email'] ?? 'Guest';
+    }
+
+    public function getUserTier(): string {
+        return $_SESSION['tier'] ?? 'SILVER';
+    }
+
+    public function getUserTierLevel(): int {
+        $levels = ['SILVER' => 1, 'GOLD' => 2, 'PLATINUM' => 3, 'DIAMOND' => 4];
+        return $levels[$this->getUserTier()] ?? 1;
+    }
+
+    public function getFirstLetter(): string {
+        return strtoupper(substr($this->getUserName(), 0, 1));
+    }
+
+    public function loadSession(): void {
+        if (!isset($_SESSION['tier'])) {
+            $stmt = $this->db->prepare("SELECT accessLevel, username FROM Guest WHERE email = ?");
+            $stmt->bind_param("s", $_SESSION['email']);
+            $stmt->execute();
+            $row = $stmt->get_result()->fetch_assoc();
+            if ($row) {
+                $_SESSION['tier'] = $row['accessLevel'];
+                $_SESSION['name'] = $row['username'];
+            }
+        }
+    }
+
+    public function placeOrder(string $itemName, float $price): bool {
+        $stmt = $this->db->prepare("SELECT guestId FROM Guest WHERE email = ?");
+        $stmt->bind_param("s", $_SESSION['email']);
+        $stmt->execute();
+        $guest = $stmt->get_result()->fetch_assoc();
+        if (!$guest) return false;
+
+        $guestID = $guest['guestId'];
+
+        $stmt2 = $this->db->prepare("SELECT consumableID FROM consumables WHERE name = ?");
+        $stmt2->bind_param("s", $itemName);
+        $stmt2->execute();
+        $item = $stmt2->get_result()->fetch_assoc();
+        if (!$item) return false;
+
+        $consumableID = $item['consumableID'];
+
+        $stmt3 = $this->db->prepare(
+            "INSERT INTO consumableorder (guestID, consumableID, totalPrice, status) VALUES (?, ?, ?, 'Pending')"
+        );
+        $stmt3->bind_param("iid", $guestID, $consumableID, $price);
+        return $stmt3->execute();
+    }
+
+    public function getMyOrders(): array {
+        $stmt = $this->db->prepare(
+            "SELECT co.orderID, co.totalPrice, co.status, co.createdAt,
+                    c.name AS itemName
+             FROM consumableorder co
+             JOIN consumables c ON co.consumableID = c.consumableID
+             JOIN Guest g ON co.guestID = g.guestId
+             WHERE g.email = ?
+             ORDER BY co.createdAt DESC"
+        );
+        $stmt->bind_param("s", $_SESSION['email']);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function cancelOrder(int $orderID): bool {
+        $stmt = $this->db->prepare("SELECT guestId FROM Guest WHERE email = ?");
+        $stmt->bind_param("s", $_SESSION['email']);
+        $stmt->execute();
+        $guest = $stmt->get_result()->fetch_assoc();
+        if (!$guest) return false;
+
+        $guestID = $guest['guestId'];
+        $stmt2 = $this->db->prepare(
+            "UPDATE consumableorder SET status = 'Cancelled'
+             WHERE orderID = ? AND guestID = ? AND status = 'Pending'"
+        );
+        $stmt2->bind_param("ii", $orderID, $guestID);
+        $stmt2->execute();
+        return $stmt2->affected_rows === 1;
+    }
+
+    public function getAllConsumables(): array {
+        $result = $this->db->query(
+            "SELECT consumableID, name, description, price, accessRequired
+             FROM consumables ORDER BY name"
+        );
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+}
+
 session_start();
 
-require_once '../../app/database.php';
-require_once 'consumables_service.php';
+$consumables = new ConsumablesController();
 
-$service    = new ConsumablesService();
-$guestName  = $service->getName();
-$guestTier  = $service->getTier();
-$firstLetter = strtoupper(substr($guestName, 0, 1));
-$consumables = $service->getAllConsumables();
-$myOrders   = $service->getMyOrders();
-$successMsg = '';
-$errorMsg   = '';
-
-// Handle form actions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? '';
-
-    if ($action === 'order') {
-        $consumableID = intval($_POST['consumableID'] ?? 0);
-        $result = $service->placeOrder($consumableID);
-        if ($result['success']) {
-            $successMsg = $result['message'];
-        } else {
-            $errorMsg = $result['message'];
-        }
-        // Refresh orders after placing
-        $myOrders = $service->getMyOrders();
-    }
-
-    if ($action === 'cancel') {
-        $orderID = intval($_POST['orderID'] ?? 0);
-        $ok = $service->cancelOrder($orderID);
-        if ($ok) {
-            $successMsg = 'Order cancelled successfully.';
-        } else {
-            $errorMsg = 'Could not cancel order.';
-        }
-        $myOrders = $service->getMyOrders();
-    }
+if (!isset($_SESSION['email'])) {
+    header('Location: ../login/login_layout.html');
+    session_destroy();
+    exit();
 }
 
-// Helper: check if guest tier can access item
-function canAccess(string $required, string $guestTier): bool {
-    $tiers = ['NONE' => 0, 'SILVER' => 1, 'GOLD' => 2, 'PLATINUM' => 3, 'DIAMOND' => 4];
-    $req   = strtoupper($required);
-    $guest = strtoupper($guestTier);
-    return ($tiers[$guest] ?? 0) >= ($tiers[$req] ?? 0);
+$consumables->loadSession();
+$message     = '';
+$messageType = '';
+
+if (isset($_POST['order_item'])) {
+    $itemName = $_POST['item_name'] ?? '';
+    $price    = floatval($_POST['item_price'] ?? 0);
+    $ok = $consumables->placeOrder($itemName, $price);
+    $message     = $ok ? htmlspecialchars($itemName) . ' ordered successfully!' : 'Failed to place order.';
+    $messageType = $ok ? 'success' : 'error';
 }
 
-// Helper: get icon based on item name
+if (isset($_POST['cancel_order'])) {
+    $orderID = intval($_POST['order_id'] ?? 0);
+    $ok = $consumables->cancelOrder($orderID);
+    $message     = $ok ? 'Order cancelled successfully.' : 'Could not cancel order.';
+    $messageType = $ok ? 'success' : 'error';
+}
+
+if (isset($_POST['logout'])) {
+    $consumables->logout();
+}
+
 function getIcon(string $name): string {
     $name = strtolower($name);
     if (str_contains($name, 'champagne') || str_contains($name, 'sparkling')) return '🍾';
@@ -63,6 +160,8 @@ function getIcon(string $name): string {
     return '🍽';
 }
 
-// Load the layout
-require_once 'consumables_layout.html';
+function getRequiredLevel(string $required): int {
+    $levels = ['SILVER' => 1, 'GOLD' => 2, 'PLATINUM' => 3, 'DIAMOND' => 4];
+    return $levels[strtoupper($required)] ?? 0;
+}
 ?>
