@@ -134,6 +134,11 @@ nav li.active {
     border: 1px solid var(--border-color);
     padding: 8px;
     cursor: pointer;
+    background: none;
+    color: var(--text-main);
+    width: 100%;
+    font-family: inherit;
+    text-transform: uppercase;
 }
 
 /* Main Content */

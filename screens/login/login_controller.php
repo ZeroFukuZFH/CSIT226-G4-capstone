@@ -28,8 +28,6 @@
     
     $loginController = new LoginController(new AuthService());
     $loginController->preventRevert();
-
-    // add back option later
        
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["submit"])) {

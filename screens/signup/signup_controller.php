@@ -32,7 +32,6 @@
     $signupController = new SignupController(new AuthService());
     $signupController->preventRevert();
 
-    // add back 
     
     if (isset($_POST['submit'])) {
         $fName = $_POST['fname'];

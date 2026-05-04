@@ -19,31 +19,22 @@
             <form class="auth-form" method="post" action="login_controller.php">
                 <div class="input-group">
                     <label for="email">EMAIL ADDRESS</label>
-                    <input name="email" type="email" id="email" placeholder="your@email.com">
+                    <input name="email" type="email" id="email" placeholder="your@email.com" required>
                 </div>
 
                 <div class="input-group">
                     <label for="password">PASSWORD</label>
-                    <input name="password" type="password" id="password" placeholder="••••••••••">
+                    <input name="password" type="password" id="password" placeholder="••••••••••" required>
                 </div>
 
-                <div class="form-options">
-                    <label class="checkbox-container">
-                        <input type="checkbox" name="remember">
-                        <span class="checkmark"></span>
-                        REMEMBER ME
-                    </label>
-                    <a href="#" class="forgot-link">FORGOT PASSWORD?</a>
-                </div>
 
                 <div class="button-group">
                     <button name="submit" type="submit" class="btn-primary">SIGN IN</button>
-                    <button name="back" type="button" class="btn-secondary">BACK</button>
                 </div>
             </form>
 
             <footer class="card-footer">
-                <a href="#">NO ACCOUNT YET? REGISTER HERE</a>
+                <a href="../signup/signup_layout.html">NO ACCOUNT YET? REGISTER HERE</a>
             </footer>
         </div>
     </div>
