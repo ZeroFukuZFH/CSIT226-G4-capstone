@@ -114,29 +114,54 @@ require_once '../dashboard/dashboard_controller.php';
             </div>
 
             <div class="vehicle-card" data-required="3">
-                <span class="lock-icon">🔒</span>
+                <?php if ($automotiveController->getUserTierLevel() < 3): ?><span class="lock-icon">🔒</span><?php endif; ?>
                 <div class="vehicle-icon">🏎</div>
                 <div class="vehicle-name">Supercar Rental</div>
                 <div class="vehicle-desc">Ferrari, Lamborghini, or Porsche available for the discerning guest</div>
                 <div class="vehicle-price">₱35,000 / day</div>
-                <div class="tier-badge">PLATINUM+ REQUIRED</div>
+                <?php if ($automotiveController->getUserTierLevel() >= 3): ?>
+                    <form method="POST" action="automotive_layout.php">
+                        <input type="hidden" name="vehicle_name" value="Supercar Rental">
+                        <input type="hidden" name="vehicle_price" value="₱35,000 / day">
+                        <button type="submit" name="book" class="btn-book">BOOK NOW</button>
+                    </form>
+                <?php else: ?>
+                    <div class="tier-badge">PLATINUM+ REQUIRED</div>
+                <?php endif; ?>
             </div>
 
             <div class="vehicle-card" data-required="2">
+                <?php if ($automotiveController->getUserTierLevel() < 2): ?><span class="lock-icon">🔒</span><?php endif; ?>
                 <div class="vehicle-icon">⛵</div>
                 <div class="vehicle-name">Yacht Transfer</div>
                 <div class="vehicle-desc">Private boat from marina to hotel pier</div>
                 <div class="vehicle-price">₱12,000</div>
-                <div class="tier-badge">GOLD+ REQUIRED</div>
+                <?php if ($automotiveController->getUserTierLevel() >= 2): ?>
+                    <form method="POST" action="automotive_layout.php">
+                        <input type="hidden" name="vehicle_name" value="Yacht Transfer">
+                        <input type="hidden" name="vehicle_price" value="₱12,000">
+                        <button type="submit" name="book" class="btn-book">BOOK NOW</button>
+                    </form>
+                <?php else: ?>
+                    <div class="tier-badge">GOLD+ REQUIRED</div>
+                <?php endif; ?>
             </div>
 
             <div class="vehicle-card" data-required="4">
-                <span class="lock-icon">🔒</span>
+                <?php if ($automotiveController->getUserTierLevel() < 4): ?><span class="lock-icon">🔒</span><?php endif; ?>
                 <div class="vehicle-icon">🚁</div>
                 <div class="vehicle-name">Helicopter Transfer</div>
                 <div class="vehicle-desc">Private helicopter with panoramic views, any destination</div>
                 <div class="vehicle-price">₱85,000</div>
-                <div class="tier-badge">✦ DIAMOND REQUIRED</div>
+                <?php if ($automotiveController->getUserTierLevel() >= 4): ?>
+                    <form method="POST" action="automotive_layout.php">
+                        <input type="hidden" name="vehicle_name" value="Helicopter Transfer">
+                        <input type="hidden" name="vehicle_price" value="₱85,000">
+                        <button type="submit" name="book" class="btn-book">BOOK NOW</button>
+                    </form>
+                <?php else: ?>
+                    <div class="tier-badge">✦ DIAMOND REQUIRED</div>
+                <?php endif; ?>
             </div>
 
             <div class="vehicle-card" data-required="1">
