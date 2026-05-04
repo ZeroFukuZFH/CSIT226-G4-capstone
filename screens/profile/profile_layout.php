@@ -23,7 +23,7 @@ require_once '../dashboard/dashboard_controller.php';
             <ul>
                 <li><a href="../dashboard/dashboard_layout.php" class="nav-btn">Dashboard</a></li>
                 <li><a href="../rooms/rooms_layout.php" class="nav-btn">Rooms</a></li>
-                <li><a href="../bookings/bookings_layout.html" class="nav-btn">Booking Status</a></li>
+                <li><a href="../bookings/bookings_layout.php" class="nav-btn">Booking Status</a></li>
             </ul>
         </nav>
     </div>

@@ -29,7 +29,7 @@ require_once 'dashboard_controller.php';
                 <ul>
                     <li class="active">Dashboard</li>
                     <li><a href="../rooms/rooms_layout.php" class="nav-btn">Rooms</a></li>
-                    <li><a href="../bookings/bookings_layout.html" class="nav-btn">Booking Status</a></li>
+                    <li><a href="../bookings/bookings_layout.php" class="nav-btn">Booking Status</a></li>
                 </ul>
             </nav>
         </div>
@@ -140,7 +140,7 @@ require_once 'dashboard_controller.php';
                 </div>
             </a>
             
-            <a href="../bookings/bookings_layout.html" class="nav-btn">
+            <a href="../bookings/bookings_layout.php" class="nav-btn">
                 <div class="card">
                     <div class="card-icon">📋</div>
                     <h4>Bookings</h4>
