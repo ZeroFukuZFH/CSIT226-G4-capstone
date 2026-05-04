@@ -1,4 +1,7 @@
-<?php include 'upgrade_controller.php'; ?>
+<?php
+include 'upgrade_controller.php';
+require_once '../dashboard/dashboard_controller.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,16 +41,34 @@
             </nav>
         </div>
 
+        <div class="nav-section">
+            <span class="nav-label">Membership</span>
+            <nav>
+                <ul>
+                    <li class="active">Upgrade Tier</li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="nav-section">
+            <span class="nav-label">My Account</span>
+            <nav>
+                <ul>
+                    <li><a href="../profile/profile_layout.php" class="nav-btn">Edit Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+
         <div class="user-profile">
             <div class="profile-info">
-                <div class="avatar"><?= htmlspecialchars(strtoupper(substr($upgradeController->getUserName(), 0, 1))) ?></div>
+                <div class="avatar"></div>
                 <div class="user-meta">
-                    <div class="user-name"><?= htmlspecialchars($upgradeController->getUserName()) ?></div>
-                    <div class="user-tier"><?= htmlspecialchars($upgradeController->getUserTier()) ?> TIER</div>
+                    <div class="user-name"><?php echo $dashboard->getName(); ?></div>
+                    <div class="user-tier"><?php echo $dashboard->getTier(); ?> TIER</div>
                 </div>
             </div>
-            <form method="POST" action="../signout.php">
-                <button type="submit" class="sign-out-btn">SIGN OUT</button>
+            <form method="POST" action="../dashboard/dashboard_controller.php">
+                <button name="logout" type="submit" class="sign-out-btn">SIGN OUT</button>
             </form>
         </div>
     </aside>
