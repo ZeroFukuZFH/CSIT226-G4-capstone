@@ -1,3 +1,77 @@
+<?php
+// ─── CONTROLLER LOGIC (moved here so this file is self-contained) ───────────
+session_start();
+
+// Redirect to login if not logged in
+if (empty($_SESSION['email'])) {
+    header('Location: ../auth/auth_layout.html');
+    exit;
+}
+
+require_once '../../app/database.php';
+require_once 'consumables_service.php';
+
+// I create the service which connects to DB and loads guest info
+$service     = new ConsumablesService();
+$guestName   = $service->getName();
+$guestTier   = $service->getTier();
+$firstLetter = strtoupper(substr($guestName, 0, 1)) ?: 'G';
+$consumables = $service->getAllConsumables();
+$myOrders    = $service->getMyOrders();
+$successMsg  = '';
+$errorMsg    = '';
+
+// I handle form submissions from ORDER NOW and CANCEL buttons
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+
+    if ($action === 'order') {
+        $consumableID = (int) ($_POST['consumableID'] ?? 0);
+        $result = $service->placeOrder($consumableID);
+        if ($result['success']) {
+            $successMsg = $result['message'];
+        } else {
+            $errorMsg = $result['message'];
+        }
+        $myOrders = $service->getMyOrders();
+    }
+
+    if ($action === 'cancel') {
+        $orderID = (int) ($_POST['orderID'] ?? 0);
+        $ok = $service->cancelOrder($orderID);
+        if ($ok) {
+            $successMsg = 'Order cancelled successfully.';
+        } else {
+            $errorMsg   = 'Could not cancel this order.';
+        }
+        $myOrders = $service->getMyOrders();
+    }
+}
+
+// I check if the guest's tier can access a locked item
+function canAccess(string $required, string $guestTier): bool
+{
+    $tiers = ['NONE' => 0, 'SILVER' => 1, 'GOLD' => 2, 'PLATINUM' => 3, 'DIAMOND' => 4];
+    return ($tiers[strtoupper($guestTier)] ?? 0) >= ($tiers[strtoupper($required)] ?? 0);
+}
+
+// I pick an emoji icon based on the item name
+function getIcon(?string $name): string
+{
+    if (!$name) return '🍽';
+    $name = strtolower($name);
+    if (str_contains($name, 'champagne') || str_contains($name, 'sparkling')) return '🍾';
+    if (str_contains($name, 'wine'))      return '🍷';
+    if (str_contains($name, 'whiskey') || str_contains($name, 'spirit') || str_contains($name, 'scotch')) return '🥃';
+    if (str_contains($name, 'coffee') || str_contains($name, 'morning') || str_contains($name, 'tea'))    return '☕';
+    if (str_contains($name, 'dining') || str_contains($name, 'sandwich') || str_contains($name, 'meal'))  return '🥩';
+    if (str_contains($name, 'chef'))      return '👨‍🍳';
+    if (str_contains($name, 'cake') || str_contains($name, 'pastry') || str_contains($name, 'amenity'))   return '🧁';
+    if (str_contains($name, 'water'))     return '💧';
+    return '🍽';
+}
+// ─── END CONTROLLER LOGIC ────────────────────────────────────────────────────
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,54 +141,46 @@
             <h1>Consumables</h1>
         </div>
 
-        <!-- PRODUCT GRID — loaded from consumables table in DB -->
+        <!-- PRODUCT GRID -->
         <div class="product-grid">
             <?php if (!empty($consumables)): ?>
-            <?php foreach ($consumables as $item): ?>
-            <?php
-            // I check if this item is locked for the guest's tier
-            $isLocked = !empty($item['accessRequired'])
-                        && !canAccess($item['accessRequired'], $guestTier);
-          ?>
+                <?php foreach ($consumables as $item): ?>
+                <?php
+                    $isLocked = !empty($item['accessRequired'])
+                                && !canAccess($item['accessRequired'], $guestTier);
+                ?>
+                <div class="product-card <?= $isLocked ? 'locked-card' : '' ?>">
 
-            <div class="product-card <?= $isLocked ? 'locked-card' : '' ?>">
+                    <?php if ($isLocked): ?>
+                    <div class="product-lock">🔒</div>
+                    <?php endif; ?>
 
-                <!-- Lock badge for locked items -->
-                <?php if ($isLocked): ?>
-                <div class="product-lock">🔒</div>
-                <?php endif; ?>
+                    <div class="product-icon"><?= getIcon($item['name'] ?? '') ?></div>
+                    <div class="product-name"><?= htmlspecialchars($item['name'] ?? '') ?></div>
+                    <div class="product-desc"><?= htmlspecialchars($item['description'] ?? '') ?></div>
 
-                <!-- Emoji icon based on item name -->
-                <div class="product-icon"><?= getIcon($item['name'] ?? '') ?></div>
+                    <?php if ($item['price'] == 0): ?>
+                    <div class="product-price complimentary-text">Complimentary</div>
+                    <?php else: ?>
+                    <div class="product-price">₱<?= number_format($item['price'], 0) ?></div>
+                    <?php endif; ?>
 
-                <!-- Item name and description from database -->
-                <div class="product-name"><?= htmlspecialchars($item['name'] ?? '') ?></div>
-                <div class="product-desc"><?= htmlspecialchars($item['description'] ?? '') ?></div>
+                    <?php if ($isLocked): ?>
+                    <div class="sc-tier-req tier-<?= strtolower($item['accessRequired']) ?>">
+                        <?= htmlspecialchars($item['accessRequired']) ?>+ Required
+                    </div>
+                    <?php else: ?>
+                    <form method="POST" action="consumables_layout.php">
+                        <input type="hidden" name="action" value="order">
+                        <input type="hidden" name="consumableID" value="<?= $item['consumableID'] ?>">
+                        <button type="submit" class="btn-sm">
+                            <?= $item['price'] == 0 ? 'REQUEST' : 'ORDER NOW' ?>
+                        </button>
+                    </form>
+                    <?php endif; ?>
 
-                <!-- Price from database -->
-                <?php if ($item['price'] == 0): ?>
-                <div class="product-price complimentary-text">Complimentary</div>
-                <?php else: ?>
-                <div class="product-price">₱<?= number_format($item['price'], 0) ?></div>
-                <?php endif; ?>
-
-                <!-- Button or locked label -->
-                <?php if ($isLocked): ?>
-                <div class="sc-tier-req tier-<?= strtolower($item['accessRequired']) ?>">
-                    <?= htmlspecialchars($item['accessRequired']) ?>+ Required
                 </div>
-                <?php else: ?>
-                <form method="POST" action="consumables_controller.php">
-                    <input type="hidden" name="action" value="order">
-                    <input type="hidden" name="consumableID" value="<?= $item['consumableID'] ?>">
-                    <button type="submit" class="btn-sm">
-                        <?= $item['price'] == 0 ? 'REQUEST' : 'ORDER NOW' ?>
-                    </button>
-                </form>
-                <?php endif; ?>
-
-            </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
             <?php else: ?>
             <div style="color: var(--muted); font-size: 12px; letter-spacing: 2px;">
                 No consumables available.
@@ -123,7 +189,7 @@
         </div>
         <!-- END PRODUCT GRID -->
 
-        <!-- MY ORDERS TABLE — shows only if guest has orders -->
+        <!-- MY ORDERS TABLE -->
         <?php if (!empty($myOrders)): ?>
         <div class="orders-section">
             <div class="orders-label">✦ My Orders</div>
@@ -143,14 +209,14 @@
                     <td><?= htmlspecialchars($order['itemName']) ?></td>
                     <td>₱<?= number_format($order['totalPrice'], 0) ?></td>
                     <td>
-                  <span class="status-badge status-<?= strtolower($order['status']) ?>">
-                    <?= htmlspecialchars($order['status']) ?>
-                  </span>
+                        <span class="status-badge status-<?= strtolower($order['status']) ?>">
+                            <?= htmlspecialchars($order['status']) ?>
+                        </span>
                     </td>
                     <td><?= date('M d, Y', strtotime($order['createdAt'])) ?></td>
                     <td>
                         <?php if ($order['status'] === 'Pending'): ?>
-                        <form method="POST" action="consumables_controller.php">
+                        <form method="POST" action="consumables_layout.php">
                             <input type="hidden" name="action" value="cancel">
                             <input type="hidden" name="orderID" value="<?= $order['orderID'] ?>">
                             <button type="submit" class="btn-cancel">Cancel</button>
@@ -172,7 +238,6 @@
 </div>
 
 <script>
-    // I show a toast popup message at the bottom of the screen
     function showToast(msg) {
         const t = document.getElementById('toast');
         t.textContent = msg;
@@ -180,7 +245,6 @@
         setTimeout(() => t.classList.remove('show'), 2800);
     }
 
-    // I show success or error message on page load
     <?php if (!empty($successMsg)): ?>
     window.onload = () => showToast('✦ <?= addslashes($successMsg) ?>');
     <?php elseif (!empty($errorMsg)): ?>
