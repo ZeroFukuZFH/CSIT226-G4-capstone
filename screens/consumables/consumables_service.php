@@ -1,5 +1,7 @@
 <?php
 
+// this is the service class for consumables — all the database logic lives here
+// gi-extend nato ang Database para ma-access ang $this->conn directly
 class ConsumablesService extends Database {
 
     private string $name;
@@ -8,15 +10,15 @@ class ConsumablesService extends Database {
 
     public function __construct()
     {
-        // I call Database constructor so $this->conn is ready
+        // call the parent Database constructor so $this->conn is ready to use
         parent::__construct();
 
-        // I start the session if it hasn't started yet
+        // start the session if wala pa siya nagsugod
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // I get the guest's info from DB using their session email
+        // kuhaon nato ang guest info from the database using their session email
         $sql  = 'SELECT guestId, username, accessLevel FROM guest WHERE email = ?';
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('s', $_SESSION['email']);
@@ -24,31 +26,31 @@ class ConsumablesService extends Database {
         $result = $stmt->get_result();
 
         if ($row = $result->fetch_assoc()) {
-            // I save the guest info into the class properties
+            // i-save ang guest info sa class properties para magamit sa ubang methods
             $this->guestID     = $row['guestId'];
             $this->name        = $row['username'];
             $this->accessLevel = $row['accessLevel'];
         } else {
-            // I set defaults if guest is not found
+            // fallback defaults kung wala ma-find ang guest — just in case
             $this->guestID     = 0;
             $this->name        = 'Guest';
             $this->accessLevel = 'NONE';
         }
     }
 
-    // I return the guest's name
+    // ibalik ang pangalan sa guest — ginagamit sa sidebar display
     public function getName(): string
     {
         return $this->name;
     }
 
-    // I return the guest's tier
+    // ibalik ang tier sa guest — ginagamit para check kung may access ba siya
     public function getTier(): string
     {
         return $this->accessLevel;
     }
 
-    // I get all consumable items from the consumables table
+    // kuhaon tanan consumable items from the database, sorted by name
     public function getAllConsumables(): array
     {
         $result = $this->conn->query(
@@ -58,28 +60,28 @@ class ConsumablesService extends Database {
              ORDER BY name'
         );
 
-        // I return empty array if query fails instead of crashing
+        // ibalik empty array nalang kung mag-fail ang query para dili mag-crash ang page
         if (!$result) return [];
 
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    // I place an order by inserting into consumableorder table
+    // mag-place ug order — mag-insert sa consumableorder table with Pending status
     public function placeOrder(int $consumableID): array
     {
-        // I get the item name and price first
+        // una kuhaon ang item name and price para ma-validate siya
         $sql  = 'SELECT name, price FROM consumables WHERE consumableID = ?';
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('i', $consumableID);
         $stmt->execute();
         $item = $stmt->get_result()->fetch_assoc();
 
-        // I return error if item not found
+        // kung wala ma-find ang item, ibalik dayon ug error — ayaw na proceed
         if (!$item) {
             return ['success' => false, 'message' => 'Item not found.'];
         }
 
-        // I insert the new order into consumableorder
+        // insert the new order into the consumableorder table
         $sql2  = 'INSERT INTO consumableorder (guestID, consumableID, totalPrice, status)
                   VALUES (?, ?, ?, "Pending")';
         $stmt2 = $this->conn->prepare($sql2);
@@ -93,7 +95,7 @@ class ConsumablesService extends Database {
         }
     }
 
-    // I get all orders made by this guest
+    // kuhaon tanan orders sa current guest, pinaka-bag-o ang una
     public function getMyOrders(): array
     {
         $sql = 'SELECT co.orderID, co.totalPrice, co.status, co.createdAt,
@@ -109,13 +111,14 @@ class ConsumablesService extends Database {
 
         $result = $stmt->get_result();
 
-        // I return empty array if query fails instead of crashing
+        // ibalik empty array nalang kung mag-fail — safer ni kaysa mag-crash
         if (!$result) return [];
 
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    // I cancel a pending order by updating its status
+    // i-cancel ang order by updating its status to Cancelled
+    // only works if the order is still Pending and belongs to this guest
     public function cancelOrder(int $orderID): bool
     {
         $sql  = 'UPDATE consumableorder
@@ -125,6 +128,7 @@ class ConsumablesService extends Database {
         $stmt->bind_param('ii', $orderID, $this->guestID);
         $stmt->execute();
 
+        // kung affected_rows is 1, meaning na-cancel gyud siya — ibalik true
         return $stmt->affected_rows === 1;
     }
 }

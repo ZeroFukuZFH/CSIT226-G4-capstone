@@ -1,17 +1,14 @@
 <?php
-// ─── CONTROLLER LOGIC (moved here so this file is self-contained) ───────────
 session_start();
 
-// Redirect to login if not logged in
 if (empty($_SESSION['email'])) {
-    header('Location: ../auth/auth_layout.html');
+    header('Location: /CSIT226-G4-capstone/screens/auth/auth_layout.html');
     exit;
 }
 
-require_once '../../app/database.php';
-require_once 'consumables_service.php';
+require_once __DIR__ . '/../../app/database.php';
+require_once __DIR__ . '/consumables_service.php';
 
-// I create the service which connects to DB and loads guest info
 $service     = new ConsumablesService();
 $guestName   = $service->getName();
 $guestTier   = $service->getTier();
@@ -21,7 +18,6 @@ $myOrders    = $service->getMyOrders();
 $successMsg  = '';
 $errorMsg    = '';
 
-// I handle form submissions from ORDER NOW and CANCEL buttons
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
@@ -48,14 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// I check if the guest's tier can access a locked item
 function canAccess(string $required, string $guestTier): bool
 {
     $tiers = ['NONE' => 0, 'SILVER' => 1, 'GOLD' => 2, 'PLATINUM' => 3, 'DIAMOND' => 4];
     return ($tiers[strtoupper($guestTier)] ?? 0) >= ($tiers[strtoupper($required)] ?? 0);
 }
 
-// I pick an emoji icon based on the item name
 function getIcon(?string $name): string
 {
     if (!$name) return '🍽';
@@ -70,84 +64,78 @@ function getIcon(?string $name): string
     if (str_contains($name, 'water'))     return '💧';
     return '🍽';
 }
-// ─── END CONTROLLER LOGIC ────────────────────────────────────────────────────
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consumables — Tranquiliy Base</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet">
+    <title>Consumables — Tranquility Base</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="consumables_style.css">
 </head>
 <body>
 
-<!-- Toast popup message -->
 <div class="toast" id="toast"></div>
 
 <div class="page-wrapper">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
+    <aside class="sidebar">
         <div class="sidebar-logo">
-            <div class="s-crest">✦ HOTEL AND CASINO</div>
-            <div class="s-name">TRANQUILIY BASE</div>
+            <div class="s-crest">HOTEL AND CASINO</div>
+            <div class="s-name">TRANQUILITY<br><strong>BASE</strong></div>
         </div>
 
-        <div class="sidebar-section">
+        <nav class="sidebar-section">
             <div class="sidebar-section-label">Navigation</div>
-            <div class="sidebar-item" onclick="window.location.href='../dashboard/dashboard_layout.php'">⊞ Dashboard</div>
-            <div class="sidebar-item" onclick="window.location.href='../rooms/rooms_layout.php'">🛏 Rooms</div>
-            <div class="sidebar-item" onclick="window.location.href='../booking/booking_layout.php'">📋 Booking Status</div>
-        </div>
+            <div class="sidebar-item" onclick="window.location.href='/CSIT226-G4-capstone/screens/dashboard/dashboard_layout.php'">Dashboard</div>
+            <div class="sidebar-item" onclick="window.location.href='/CSIT226-G4-capstone/screens/rooms/rooms_layout.php'">Rooms</div>
+            <div class="sidebar-item" onclick="window.location.href='/CSIT226-G4-capstone/screens/bookings/bookings_layout.php'">Booking Status</div>
+        </nav>
 
-        <div class="sidebar-section">
+        <nav class="sidebar-section">
             <div class="sidebar-section-label">Services</div>
-            <div class="sidebar-item active-item">🍾 Consumables</div>
-            <div class="sidebar-item" onclick="window.location.href='../automotive/automotive_layout.php'">🚗 Automotives</div>
-            <div class="sidebar-item locked">🎰 Amusement <span class="lock-icon">🔒</span></div>
-        </div>
+            <div class="sidebar-item active-item">Consumables</div>
+            <div class="sidebar-item" onclick="window.location.href='/CSIT226-G4-capstone/screens/automotive/automotive_layout.php'">Automotives</div>
+            <div class="sidebar-item" onclick="window.location.href='/CSIT226-G4-capstone/screens/amusement/amusement_layout.php'">Amusement</div>
+        </nav>
 
-        <div class="sidebar-section">
+        <nav class="sidebar-section">
             <div class="sidebar-section-label">Membership</div>
-            <div class="sidebar-item" onclick="window.location.href='../upgrade/upgrade_layout.php'">⬆ Upgrade Tier</div>
-        </div>
+            <div class="sidebar-item" onclick="window.location.href='/CSIT226-G4-capstone/screens/upgrade/upgrade_layout.php'">Upgrade Tier</div>
+        </nav>
 
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">Account</div>
-            <div class="sidebar-item" onclick="window.location.href='../profile/profile_layout.php'">👤 My Profile</div>
-        </div>
+        <nav class="sidebar-section">
+            <div class="sidebar-section-label">My Account</div>
+            <div class="sidebar-item" onclick="window.location.href='/CSIT226-G4-capstone/screens/profile/profile_layout.php'">Edit Profile</div>
+        </nav>
 
-        <!-- Guest info loaded from database -->
         <div class="sidebar-bottom">
             <div class="user-row">
                 <div class="user-avatar"><?= $firstLetter ?></div>
                 <div class="user-info">
                     <div class="user-name"><?= htmlspecialchars($guestName) ?></div>
-                    <div class="user-tier">✦ <?= htmlspecialchars($guestTier) ?> Tier</div>
+                    <div class="user-tier"><?= htmlspecialchars($guestTier) ?> TIER</div>
                 </div>
             </div>
-            <button class="logout-btn" onclick="window.location.href='../auth/auth_layout.html'">SIGN OUT</button>
+            <button class="logout-btn" onclick="window.location.href='/CSIT226-G4-capstone/screens/auth/auth_layout.html'">
+                SIGN OUT
+            </button>
         </div>
-    </div>
-    <!-- END SIDEBAR -->
+    </aside>
 
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
+    <main class="main-content">
 
         <div class="page-header">
-            <div class="ph-label">✦ In-Room &amp; Dining</div>
+            <div class="ph-label">+ IN-ROOM &amp; DINING</div>
             <h1>Consumables</h1>
         </div>
 
-        <!-- PRODUCT GRID -->
         <div class="product-grid">
             <?php if (!empty($consumables)): ?>
                 <?php foreach ($consumables as $item): ?>
                 <?php
-                    $isLocked = !empty($item['accessRequired'])
-                                && !canAccess($item['accessRequired'], $guestTier);
+                    $isLocked = !empty($item['accessRequired']) && !canAccess($item['accessRequired'], $guestTier);
                 ?>
                 <div class="product-card <?= $isLocked ? 'locked-card' : '' ?>">
 
@@ -170,10 +158,10 @@ function getIcon(?string $name): string
                         <?= htmlspecialchars($item['accessRequired']) ?>+ Required
                     </div>
                     <?php else: ?>
-                    <form method="POST" action="consumables_layout.php">
+                    <form method="POST" action="/CSIT226-G4-capstone/screens/consumables/consumables_layout.php">
                         <input type="hidden" name="action" value="order">
                         <input type="hidden" name="consumableID" value="<?= $item['consumableID'] ?>">
-                        <button type="submit" class="btn-sm">
+                        <button type="submit" class="btn-order">
                             <?= $item['price'] == 0 ? 'REQUEST' : 'ORDER NOW' ?>
                         </button>
                     </form>
@@ -182,26 +170,22 @@ function getIcon(?string $name): string
                 </div>
                 <?php endforeach; ?>
             <?php else: ?>
-            <div style="color: var(--muted); font-size: 12px; letter-spacing: 2px;">
-                No consumables available.
-            </div>
+            <div class="empty-state">No consumables available at this time.</div>
             <?php endif; ?>
         </div>
-        <!-- END PRODUCT GRID -->
 
-        <!-- MY ORDERS TABLE -->
         <?php if (!empty($myOrders)): ?>
-        <div class="orders-section">
+        <section class="orders-section">
             <div class="orders-label">✦ My Orders</div>
             <table class="orders-table">
                 <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                    <th>Action</th>
-                </tr>
+                    <tr>
+                        <th>Item</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($myOrders as $order): ?>
@@ -216,24 +200,23 @@ function getIcon(?string $name): string
                     <td><?= date('M d, Y', strtotime($order['createdAt'])) ?></td>
                     <td>
                         <?php if ($order['status'] === 'Pending'): ?>
-                        <form method="POST" action="consumables_layout.php">
+                        <form method="POST" action="/CSIT226-G4-capstone/screens/consumables/consumables_layout.php">
                             <input type="hidden" name="action" value="cancel">
                             <input type="hidden" name="orderID" value="<?= $order['orderID'] ?>">
                             <button type="submit" class="btn-cancel">Cancel</button>
                         </form>
                         <?php else: ?>
-                        <span style="color: var(--muted); font-size: 9px;">—</span>
+                        <span class="no-action">—</span>
                         <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>
                 </tbody>
             </table>
-        </div>
+        </section>
         <?php endif; ?>
 
-    </div>
-    <!-- END MAIN CONTENT -->
+    </main>
 
 </div>
 
